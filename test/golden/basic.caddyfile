@@ -1,0 +1,62 @@
+{
+	https_port 8886
+	auto_https disable_redirects
+	admin 127.0.0.1:2019
+
+	servers {
+		protocols h1
+	}
+}
+
+:8886 {
+	bind ::
+	tls /etc/caddy/ssl/wildcard.crt /etc/caddy/ssl/wildcard.key
+	log {
+		output file /var/log/caddy/port-8886-access.log
+		level INFO
+		format json
+	}
+
+	# ── rule_simple ── 简单反代
+	@rule_simple host simple.example.com
+	handle @rule_simple {
+		reverse_proxy localhost:6768 {
+			transport http {
+				read_timeout 24h
+				write_timeout 24h
+			}
+			header_up X-Real-IP {remote_host}
+		}
+	}
+
+	# ── rule_multi_upstream ── 负载均衡
+	@rule_multi_upstream host lb.example.com
+	handle @rule_multi_upstream {
+		reverse_proxy 10.0.0.1:8080 10.0.0.2:8080 {
+			lb_policy round_robin
+			transport http {
+				read_timeout 60s
+				write_timeout 60s
+			}
+		}
+	}
+
+	# ── rule_with_auth ── 带认证与过滤
+	@rule_with_auth host secure.example.com
+	handle @rule_with_auth {
+		basic_auth {
+			admin $2a$14$K3BqJw43ex6BgCri0/xPduC/gmDtrUpR8mo5ExNq.HKzGrujIkHR.
+		}
+		@rule_with_auth_ipblocked not remote_ip 192.168.20.0/24
+		respond @rule_with_auth_ipblocked "Forbidden" 403
+		@rule_with_auth_uablocked header_regexp User-Agent (?i)(bot|crawler)
+		respond @rule_with_auth_uablocked "Forbidden" 403
+		reverse_proxy localhost:3000 {
+			transport http {
+				read_timeout 300s
+				write_timeout 300s
+			}
+			header_up X-Real-IP {remote_host}
+		}
+	}
+}
