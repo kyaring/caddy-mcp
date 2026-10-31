@@ -1,0 +1,9 @@
+node_modules/
+*.log
+*.bak
+*.bak.*
+.env
+config/tokens.json
+config/config.json
+config/ddns.json
+.DS_Store

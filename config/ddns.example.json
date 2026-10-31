@@ -1,0 +1,7 @@
+{
+  "zone": "example.com",
+  "iface": "eth0",
+  "records": [
+    { "name": "app.example.com", "proxied": false }
+  ]
+}

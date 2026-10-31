@@ -1,0 +1,11 @@
+{
+  "port": 3100,
+  "host": "127.0.0.1",
+  "caddyAdmin": "http://127.0.0.1:2019",
+  "caddyfile": "/etc/caddy/Caddyfile",
+  "sitesJson": "/etc/caddy-mcp/sites.json",
+  "certDir": "/etc/caddy/ssl",
+  "acmeHome": "/root/.acme.sh",
+  "logDir": "/var/log/caddy-mcp",
+  "auditLog": "/var/log/caddy-mcp/audit.log"
+}

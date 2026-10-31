@@ -1,0 +1,7 @@
+{
+  "tokens": [
+    { "name": "readonly", "token": "REPLACE_ME_RO", "scopes": ["read"] },
+    { "name": "ops",      "token": "REPLACE_ME_OPS", "scopes": ["read", "write"] },
+    { "name": "admin",    "token": "REPLACE_ME_ADMIN", "scopes": ["read", "write", "admin"] }
+  ]
+}
